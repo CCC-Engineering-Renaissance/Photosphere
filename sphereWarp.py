@@ -16,6 +16,9 @@ K = np.array([[focal_length, 0, width / 2],
 R = np.eye(3, dtype=np.float32)
 
 radius = 500
-sphereWarper = cv2.detail.SphericalWarper(scale=1.0)
-warpedImage = sphereWarper(uncroppedPan[0], K, R, flags=cv2.INTER_LINEAR, borderMode=cv2.BORDER_REFLECT)
+sphereWarper = cv2.detail.SphericalWarper(scale=1000)
+warpedImage = sphereWarper.warp(uncroppedPan[0], K, R, flags=cv2.INTER_LINEAR, borderMode=cv2.BORDER_REFLECT)
 cv2.imshow("sphere image", warpedImage)
+
+cv2.waitKey(0)
+cv2.destoryAllWindows()
