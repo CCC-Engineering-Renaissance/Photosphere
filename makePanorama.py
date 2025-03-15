@@ -42,4 +42,41 @@ else:
 	print("Error")
 
 
-print("Done with program")
+print("Done with making the panorama(unedited)")
+
+print("Second part of the program") 
+if not error:
+	
+	stitchedImg = cv2.copyMakeBorder(stitchedImg, 10, 10, 10, 10, cv2.BORDER_CONSTANT, (0,0,0)) 
+	#makes black border around image
+
+	gray = cv2.cvtColor(stitchedImg, cv2.COLOR_BGR2GRAY)
+	threshImage = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY)
+	#makes grayscale, and makes each pixel black or white(0 or 1)
+
+	cv2.imshow("O/I image", threshImage)
+	cv2.waitKey(0)
+
+	contours = cv2.findContours(threshImage.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+	areaOI = max(contours, key=cv2.contourArea)
+	#finds the round corners of the unedited image and the max area(rectangle?) of the contour
+
+	mask = np.zeros(threshImage.shape, dtype="uint8")
+
+	x, y, w, h = cv2.boundingRect(areaOI) 
+	#coords and width and height
+	cv2.rectangle(mask, (x,y), (x+w, y + h), 255, -1)
+	#makes rectangle around our area of intersest(the photo)
+
+	minRectangle = mask.copy()
+	subtrac = mask.copy()
+
+	while cv2.countNonZero(sub) > 0:
+		minRectangle = cv2.erode(minRectangle, None)
+		subtrac = cv2.subract(minRectangle, threshImage)
+
+	contours = cv2.findCountours(minRectangle.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+	#does it again
+
+
+
