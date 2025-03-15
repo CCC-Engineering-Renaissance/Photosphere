@@ -1,6 +1,7 @@
 import numpy as np
 import cv2 
 import glob
+import imutils
 
 #Goes into local folder and searches for all files that end in jpg
 imagePathsList = glob.glob("./*.jpg")
@@ -58,6 +59,8 @@ if not error:
 	cv2.waitKey(0)
 
 	contours = cv2.findContours(threshImage.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+	contours = imutils.grab_contours(contours)
 	areaOI = max(contours, key=cv2.contourArea)
 	#finds the round corners of the unedited image and the max area(rectangle?) of the contour
 
@@ -71,12 +74,29 @@ if not error:
 	minRectangle = mask.copy()
 	subtrac = mask.copy()
 
-	while cv2.countNonZero(sub) > 0:
+	#subracting minRect with the thresh image until we get the area we want
+	while cv2.countNonZero(subtrac) > 0:
 		minRectangle = cv2.erode(minRectangle, None)
 		subtrac = cv2.subract(minRectangle, threshImage)
 
 	contours = cv2.findCountours(minRectangle.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 	#does it again
+	areaOI = max(contours, key=cv2.contourArea)
 
+	cv2.imshow("minRectangle Image", minRectangle)
+	cv2.waitket(0)
+
+	x, y, w, h = cv2.boundingRect(areaOI)
+
+	stitchedImg = stitchedImg[y:y + h, x:x + w]
+
+	cv2.imwrite("stitchedOutputProcessed.png", stitchedImg)
+
+	cv2.imshow("Stiched Image Processed", stitchedImg)
+	cv2.waitKey(0)
+
+else:
+	print("Images could not be stitched!")
+	print("Probably not enough keypoints being detected!")
 
 
