@@ -4,7 +4,7 @@ import glob
 import imutils
 
 #Goes into local folder and searches for all files that end in jpg
-imagePathsList = glob.glob("./*.jpg")
+imagePathsList = glob.glob("./*.png")
 for path in imagePathsList:
 	print(path)
 imageList = []
