@@ -2,6 +2,7 @@ import numpy as np
 import cv2 
 import glob
 import imutils
+import os
 
 #Goes into local folder and searches for all files that end in jpg
 imagePathsList = glob.glob("./*.png")
@@ -79,17 +80,14 @@ if not error:
 		minRectangle = cv2.erode(minRectangle, None)
 		subtrac = cv2.subtract(minRectangle, threshImage)
 
-	cv2.imshow("minRect", minRectangle)
-	cv2.waitKey(0)
-
 	contours = cv2.findContours(minRectangle.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
-	countours = imutils.grab_contours(contours)
+	contours = imutils.grab_contours(contours) # I SPELLED CONTOURS WRONG :(
 	#does it again
 	areaOI = max(contours, key=cv2.contourArea)
 
 	cv2.imshow("minRectangle Image", minRectangle)
-	cv2.waitkey(0)
+	cv2.waitKey(0)
 
 	x, y, w, h = cv2.boundingRect(areaOI)
 
@@ -103,3 +101,5 @@ if not error:
 else:
 	print("Images could not be stitched!")
 	print("Probably not enough keypoints being detected!")
+
+#os.system("rm stitichedOutput.png")
