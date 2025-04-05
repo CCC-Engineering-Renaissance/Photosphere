@@ -52,7 +52,7 @@ if not error:
 	#makes black border around image
 
 	gray = cv2.cvtColor(stitchedImg, cv2.COLOR_BGR2GRAY)
-	threshImage = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY)
+	threshImage = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY)[1]
 	#makes grayscale, and makes each pixel black or white(0 or 1)
 
 	cv2.imshow("O/I image", threshImage)
@@ -77,14 +77,19 @@ if not error:
 	#subracting minRect with the thresh image until we get the area we want
 	while cv2.countNonZero(subtrac) > 0:
 		minRectangle = cv2.erode(minRectangle, None)
-		subtrac = cv2.subract(minRectangle, threshImage)
+		subtrac = cv2.subtract(minRectangle, threshImage)
 
-	contours = cv2.findCountours(minRectangle.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+	cv2.imshow("minRect", minRectangle)
+	cv2.waitKey(0)
+
+	contours = cv2.findContours(minRectangle.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+	countours = imutils.grab_contours(contours)
 	#does it again
 	areaOI = max(contours, key=cv2.contourArea)
 
 	cv2.imshow("minRectangle Image", minRectangle)
-	cv2.waitket(0)
+	cv2.waitkey(0)
 
 	x, y, w, h = cv2.boundingRect(areaOI)
 
@@ -98,5 +103,3 @@ if not error:
 else:
 	print("Images could not be stitched!")
 	print("Probably not enough keypoints being detected!")
-
-
